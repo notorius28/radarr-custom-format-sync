@@ -20,7 +20,8 @@ EVENT_TYPE = "eventType"
 
 ########################################################################################################################
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+log_level = os.getenv("LOG_LEVEL", "INFO")
+logger.setLevel(log_level)
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
 
 os.makedirs("./logs", exist_ok=True)
@@ -77,7 +78,7 @@ def rename_file(movie_info, appends):
 def get_current_path(movie_info):
     path = pathlib.Path(movie_info['path'])
     return str(path)
-
+    
 def get_current_filename(movie_info):
     return movie_info['movieFile']['relativePath']
 
@@ -116,15 +117,16 @@ radarrSession.headers.update({'x-api-key': radarr_key})
 radarrSession.trust_env = False
 radarrMovies = radarrSession.get('{0}/api/movie'.format(radarr_url))
 if radarrMovies.status_code >= 300:
-    logger.error('Movies retrieve returned status code {}'.format(radarrMovies.status_code))
-    sys.exit(0)
+    logger.error('Movies retrieve returned status code {}\n{}'.format(radarrMovies.status_code, radarrMovies.json()))
+    sys.exit(1)
 
 pageSize = 999999999
 movieHistoryResponse = radarrSession.get(
     '{0}/api/history?page=1&pageSize={1}&sortKey=movie.title&sortDir=desc'.format(radarr_url, pageSize))
 if movieHistoryResponse.status_code >= 300:
-    logger.error('History retrieve returned status code {}'.format(radarrMovies.status_code))
-    sys.exit(0)
+    logger.error('History retrieve returned status code {}\n{}'.format(movieHistoryResponse.status_code,
+                                                                       movieHistoryResponse.json()))
+    sys.exit(2)
 
 movieHistory = movieHistoryResponse.json()
 records = movieHistory["records"]

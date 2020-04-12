@@ -1,7 +1,5 @@
 [Radarr]
-url = http://localhost:3333
-key = 4384803r2808rvsvj023r9fjvvd0fjv
+url = http://radarr.moviesofmydreams.com
+key = 6173f8faf104465687a03da13766f846
 [Append]
-english = [english]
-spanish = [spanish]
-dual = [dual]
+cf_dual = [spanish]
