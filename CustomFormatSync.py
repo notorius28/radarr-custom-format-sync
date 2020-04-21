@@ -11,7 +11,7 @@ QUALITY = "quality"
 
 CUSTOM_FORMATS = "customFormats"
 
-VER = '0.0.1'
+VER = '0.0.2'
 
 IMPORTED_EVENT_TYPE = "downloadFolderImported"
 GRABBED_EVENT_TYPE = "grabbed"
@@ -73,6 +73,10 @@ def rename_file(movie_info, appends):
         logger.debug("{} will be moved to {}".format(str(original_path), str(new_path)))
         os.rename(original_path, new_path)
         logger.info("{} renamed to {}".format(str(original_path), str(new_path)))
+    if new_path:   
+        return new_path
+    else:
+        return current_path
 
 
 def get_current_path(movie_info):
@@ -173,7 +177,8 @@ for movieId, group in movieIdRecordMap:
             movie_file_id = movie_file["id"]
             movie_file["quality"]["customFormats"] = grabbedCustomFormats
 
-            rename_file(movie_info, appends)
+            new_path = rename_file(movie_info, appends)
+            movie_file["relativePath"] = new_path
 
             updateResponse = radarrSession.put('{0}/api/movieFile/{1}'.format(radarr_url, movie_file_id),
                                                data=json.dumps(movie_file))

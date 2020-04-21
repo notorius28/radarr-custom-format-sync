@@ -115,3 +115,6 @@ logs/*
 
 Config.txt
 Config.txt
+
+.vscode
+.vscode/**
